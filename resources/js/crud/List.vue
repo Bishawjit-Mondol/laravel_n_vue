@@ -11,29 +11,20 @@
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">Product Name</th>
+                                <th scope="col">Product Price</th>
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
+                            <tr v-for="(product, index) in products" :key="product.id">
+                                <th scope="row">{{ ++index }}</th>
+                                <td>{{ product.product_name }}</td>
+                                <td>{{ product.product_price }}</td>
+                                <td>
+                                    <a href="" class="btn btn-outline-primary">Edit</a>
+                                    <a href="" class="btn btn-outline-danger">Delete</a>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -46,7 +37,27 @@
 </template>
 
 <script>
-export default {}
+export default {
+    data() {
+        return {
+            products: [],
+        };
+    },
+    mounted() {
+        this.ProductList();
+    },
+    methods:{
+        ProductList() {
+            axios.get('/api/product')
+                .then((response) => {
+                    console.log(response.data.products);
+                    this.products = response.data.products;
+                }).catch((error) => {
+                console.log(error);
+            });
+        },
+    }
+};
 </script>
 
 <style lang="scss" scoped>
