@@ -7,16 +7,21 @@
                         <router-link :to="{name: 'List'}" class="btn btn-outline-primary">List</router-link>
                     </div>
                     <div class="card-body">
-                        <form @submit.prevent="StoreData">
+                        <form @submit.prevent="UpdateData">
                             <div class="form-group">
                                 <label for="product_name">Product Name</label>
-                                <input type="text" v-model="formData.product_name" class="form-control" id="product_name">
-                                <span class="text-danger" v-for="(error, index) in formError.product_name" :key="index">{{ error }}</span>
+                                <input type="text" v-model="formData.product_name" class="form-control"
+                                       id="product_name">
+                                <span class="text-danger" v-for="(error, index) in formError.product_name" :key="index">{{
+                                        error
+                                    }}</span>
                             </div>
                             <div class="form-group">
                                 <label for="product_price">Price</label>
-                                <input type="text" v-model="formData.product_price"  class="form-control" id="product_price">
-                                <span class="text-danger" v-for="(error, index) in formError.product_price" :key="index">{{ error }}</span>
+                                <input type="text" v-model="formData.product_price" class="form-control"
+                                       id="product_price">
+                                <span class="text-danger" v-for="(error, index) in formError.product_price"
+                                      :key="index">{{ error }}</span>
                             </div>
                             <button type="submit" class="btn btn-primary mt-2">Submit</button>
                         </form>
@@ -43,15 +48,23 @@ export default {
             }
         }
     },
+    mounted() {
+        this.edit();
+    },
     methods: {
-        StoreData() {
-            //console.log(this.formData);
-            axios.post('/api/product/store', this.formData)
+        edit() {
+            axios.get('/api/product/show/' + this.$route.params.id)
                 .then((success) => {
-                    //console.log(success.data);
-                    this.$router.push({ name: 'List' });
+                    this.formData = success.data.product;
                 }).catch((error) => {
-                //console.log(error.response.data);
+                console.log(error);
+            });
+        },
+        UpdateData() {
+            axios.post('/api/product/update/' + this.$route.params.id, this.formData)
+                .then((success) => {
+                    this.$router.push({name: 'List'});
+                }).catch((error) => {
                 this.formError.product_name = error.response.data.errors.product_name;
                 this.formError.product_price = error.response.data.errors.product_price;
             });
